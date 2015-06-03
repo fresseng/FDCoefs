@@ -1,0 +1,18 @@
+###############################################################################
+#
+#	Finite Difference Coefficients derivation using SAGE http://sagemath.org
+#	ReadMe File
+#	Copyright 2015 Nicolas Fressengeas 
+#	http://fressengeas.net
+#
+###############################################################################
+
+This directory contains 2 files :
+* FDCoefs.sage which contains the definition of the one usable function
+	HighOrderFiniteDiff(DiffOrder,(imin,imax))
+* FDexamples.sage which contains examples on how to use it
+
+More insight in Finite Difference coefficients can be found on wikipedia :
+https://en.wikipedia.org/wiki/Finite_difference_coefficient
+
+
