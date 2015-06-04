@@ -25,6 +25,9 @@
 ###############################################################################
 
 import numpy as np
+from sage.all import var
+from sage.all import solve
+from sage.all import diff
 
 def FDcoeff(i):
     """
@@ -63,7 +66,7 @@ def FDequationList(DiffOrder,x,h,(imin,imax)):
 
 def HighOrderFiniteDiff(DiffOrder,(imin,imax)):
     """Computes the coeeficients of a Finite Difference Approximation of the DiffOrder order derivative using the points in between imin and imax. The order of the approximation is given by imax-imin.
-    Returns a list of couples (i,a) where i is the discretization point number refered to the point where the derivative is actually evaluated and a the corresponding coeficient in the Finite Difference Approximation. To get the actual coefficient, remeber that it should be divided by h^DiffOrder, where h is the discretization step.
+    Returns a list of couples (i,a) where i is the discretization point number refered to the point where the derivative is actually evaluated and a the corresponding coeficient in the Finite Difference Approximation. To get the actual coefficient, remeber that it should be divided by h**DiffOrder, where h is the discretization step.
     The method used is called Indeterminate Coefficient
     DiffOrder : differential order
     imin : with respect to the point where the derivative is computed, the leftmost neighbor (e.g. -1 for a centered 3 points first or second order derivative)
@@ -79,7 +82,7 @@ def HighOrderFiniteDiff(DiffOrder,(imin,imax)):
     EqList=FDequationList(DiffOrder,x,h,(imin,imax))
     ResEq=solve(EqList,FDcoefflist((imin,imax)),solution_dict=True)
     ResCoefList=[coef.substitute(ResEq[0]) for coef in FDcoefflist((imin,imax))]
-    ResICoef = [(i,ResCoefList[i-imin]*h^DiffOrder) for i in range(imin,imax+1)]
+    ResICoef = [(i,ResCoefList[i-imin]*h**DiffOrder) for i in range(imin,imax+1)]
     return(ResICoef)
 
 def DDiff(tab,h,DiffOrder,Accuracy):
@@ -120,4 +123,4 @@ def DDiff(tab,h,DiffOrder,Accuracy):
             deriv+=coefs[j][1]*tab[tabN-npoints+j]
         right.insert(0,deriv)
         Dright=np.array(right)
-    return(np.concatenate((Dleft,Dtab,Dright))/h^DiffOrder)
+    return(np.concatenate((Dleft,Dtab,Dright))/h**DiffOrder)
