@@ -74,5 +74,19 @@ for j in range(2,7):
 #				Accuracy==(imax-imin)-N
 #
 ###############################################################################
-
 #
+#
+#	And now one example on how to use DDiff, which is an extension
+#	of the numpy.diff discrete differential tool
+#
+# Create a 1D array of size 100
+t=np.array([i**3 for i in range(100)])
+# Assuming a space step of 0.1, compute the first order derivative
+#  	at accuracy 3
+dt=DDiff(t,0.1,1,3)
+# Check that the size is unchanged
+print(dt.shape)
+# Check the derivative value
+list_plot(dt)
+#
+###############################################################################

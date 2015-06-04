@@ -24,6 +24,7 @@
 #
 ###############################################################################
 
+import numpy as np
 
 def FDcoeff(i):
     """
@@ -80,3 +81,43 @@ def HighOrderFiniteDiff(DiffOrder,(imin,imax)):
     ResCoefList=[coef.substitute(ResEq[0]) for coef in FDcoefflist((imin,imax))]
     ResICoef = [(i,ResCoefList[i-imin]*h^DiffOrder) for i in range(imin,imax+1)]
     return(ResICoef)
+
+def DDiff(tab,h,DiffOrder,Accuracy):
+    """
+    DDiff(tab,h,DiffOrder,Accuracy) returns the discrete derivative of Order DiffOrder of the 1D array tab at the given Accuracy assuming a Finite Difference homogeneous h step. The size on the returned array is the same as that of the input one.
+    It is en enhancement of the numpy.diff function.
+    """
+    tabN=tab.shape[0]
+    npoints=Accuracy+DiffOrder+1  # because Accuracy==(imax-imin)-DiffOrder==npoints-1-DiffOrder
+    #Far away from the borders
+    # if npoints is odd, take a centered npoints scheme
+    # if npoints is even, take a centered npoints+1 scheme
+    maxshift=int(npoints/2)
+    coefs=HighOrderFiniteDiff(DiffOrder,(-maxshift,+maxshift))
+    Dtab=np.zeros(tabN-2*maxshift)
+    for i in range(2*maxshift+1):
+        Dtab+=coefs[i][1]*tab[i:tabN-2*maxshift+i]
+    #let us now car about the borders
+    #derivatives will be off centered while keeping the same number of points
+    left=[]
+    right=[]
+    for i in range(maxshift):
+        #left
+        imin=-i
+        imax=imin+npoints-1
+        coefs=HighOrderFiniteDiff(DiffOrder,(imin,imax))
+        deriv=0
+        for j in range(npoints) :
+            deriv+=coefs[j][1]*tab[j]
+        left.append(deriv)
+        Dleft=np.array(left)
+        #right
+        imax=+i
+        imin=imax-npoints+1
+        coefs=HighOrderFiniteDiff(DiffOrder,(imin,imax))
+        deriv=0
+        for j in range(npoints) :
+            deriv+=coefs[j][1]*tab[tabN-npoints+j]
+        right.insert(0,deriv)
+        Dright=np.array(right)
+    return(np.concatenate((Dleft,Dtab,Dright))/h^DiffOrder)
